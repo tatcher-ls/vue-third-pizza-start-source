@@ -19,3 +19,9 @@ export interface Size {
     image: string;
     multiplier: string;
 }
+
+export interface Sauce {
+    id: number;
+    name: string;
+    price: number;
+}

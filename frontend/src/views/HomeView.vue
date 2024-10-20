@@ -10,19 +10,21 @@
 
             <div class="sheet__content dough">
               <label
-                v-for="item in doughList"
-                :key="item.id"
-                class="dough__input dough__input--light"
+                v-for="doughType in doughList"
+                :key="doughType.id"
+                class="dough__input"
+                :class="`dough__input--${doughSizes[doughType.id]}`"
               >
                 <input
                   type="radio"
                   name="dought"
-                  value="light"
+                  :value="doughSizes[doughType.id]"
                   class="visually-hidden"
                   checked
                 />
-                <b>{{ item.name }}</b>
-                <span>{{ item.description }}</span>
+                <img :src="getImage(doughType.image)" :alt="doughType.name" />
+                <b>{{ doughType.name }}</b>
+                <span>{{ doughType.description }}</span>
               </label>
             </div>
           </div>
@@ -36,12 +38,13 @@
               <label
                 v-for="size in sizesList"
                 :key="size.id"
-                class="diameter__input diameter__input--small"
+                class="diameter__input"
+                :class="`diameter__input--${sizesData[size.id]}`"
               >
                 <input
                   type="radio"
                   name="diameter"
-                  value="small"
+                  :value="sizesData[size.id]"
                   class="visually-hidden"
                   checked
                 />
@@ -61,13 +64,18 @@
               <div class="ingredients__sauce">
                 <p>Основной соус:</p>
 
-                <label class="radio ingredients__input">
-                  <input type="radio" name="sauce" value="tomato" checked />
-                  <span>Томатный</span>
-                </label>
-                <label class="radio ingredients__input">
-                  <input type="radio" name="sauce" value="creamy" />
-                  <span>Сливочный</span>
+                <label
+                  v-for="sauce in saucesList"
+                  :key="sauce.id"
+                  class="radio ingredients__input"
+                >
+                  <input
+                    type="radio"
+                    name="sauce"
+                    :value="saucesData[sauce.id]"
+                    checked
+                  />
+                  <span>{{ sauce.name }}</span>
                 </label>
               </div>
 
@@ -80,9 +88,16 @@
                     :key="ingredient.id"
                     class="ingredients__item"
                   >
-                    <span class="filling filling--mushrooms">{{
-                      ingredient.name
-                    }}</span>
+                    <div
+                      class="filling"
+                      :class="`filling--${saucesData[ingredient.id]}`"
+                    >
+                      <img
+                        :src="getImage(ingredient.image)"
+                        :alt="ingredient.name"
+                      />
+                      {{ ingredient.name }}
+                    </div>
 
                     <div class="counter counter--orange ingredients__counter">
                       <button
@@ -146,10 +161,16 @@
 import dough from "../mocks/dough.json";
 import ingredients from "../mocks/ingredients.json";
 import sizes from "../mocks/sizes.json";
+import sauces from "../mocks/sauces.json";
 import { ref } from "vue";
-import { DoughItem, Ingredient, Size } from "../types/interfaces";
+import { DoughItem, Ingredient, Size, Sauce } from "../types/interfaces";
+import { getImage } from "../common/helpers";
+import doughSizes from "../common/data/doughSizes";
+import sizesData from "../common/data/sizes";
+import saucesData from "../common/data/sauces";
 
 const doughList = ref<Array<DoughItem>>(dough);
 const ingredientsList = ref<Array<Ingredient>>(ingredients);
 const sizesList = ref<Array<Size>>(sizes);
+const saucesList = ref<Array<Sauce>>(sauces);
 </script>
