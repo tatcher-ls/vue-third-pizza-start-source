@@ -3,10 +3,11 @@
     <div class="header__logo">
       <a href="index.html" class="logo">
         <img
-            src="@/assets/img/logo.svg"
-            alt="V!U!E! Pizza logo"
-            width="90"
-            height="40">
+          src="@/assets/img/logo.svg"
+          alt="V!U!E! Pizza logo"
+          width="90"
+          height="40"
+        />
       </a>
     </div>
     <div class="header__cart">
@@ -17,3 +18,8 @@
     </div>
   </header>
 </template>
+
+<style lang="scss" scoped>
+@import "@/assets/scss/ds-system/ds";
+@import "@/assets/scss/layout/header";
+</style>

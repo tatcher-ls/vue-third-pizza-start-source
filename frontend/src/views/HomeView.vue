@@ -174,3 +174,7 @@ const ingredientsList = ref<Array<Ingredient>>(ingredients);
 const sizesList = ref<Array<Size>>(sizes);
 const saucesList = ref<Array<Sauce>>(sauces);
 </script>
+
+<style lang="scss" scoped>
+@import "@/assets/scss/style";
+</style>
