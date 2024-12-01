@@ -17,7 +17,7 @@ export interface Size {
     id: number;
     name: string;
     image: string;
-    multiplier: string;
+    multiplier: number;
 }
 
 export interface Sauce {

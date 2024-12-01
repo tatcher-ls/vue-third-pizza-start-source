@@ -3,17 +3,10 @@
     <form action="#" method="post">
       <div class="content__wrapper">
         <h1 class="title title--big">Конструктор пиццы</h1>
-
-        <!--        <dough-selector v-model="doughList[0].id" :dough-list="doughList" />-->
+        {{ pizza.size }}
         <dough-selector v-model="pizza.dough" :dough-list="doughList" />
 
-        <div class="content__diameter">
-          <div class="sheet">
-            <h2 class="title title--small sheet__title">Выберите размер</h2>
-
-            <SizeList :sizes-list="sizesList" />
-          </div>
-        </div>
+        <size-list v-model="pizza.size" :sizes-list="sizesList" />
 
         <div class="content__ingredients">
           <div class="sheet">
@@ -96,11 +89,11 @@ const saucesList = ref<Array<Sauce>>(sauces);
 
 const pizza = reactive({
   dough: doughList.value[0],
+  size: sizesList.value[0],
 });
 </script>
 
-<style lang="scss" scoped>
-//@import "@/assets/scss/style";
+<style lang="scss">
 @import "@/assets/scss/ds-system/ds.scss";
 @import "@/assets/scss/mixins/mixins.scss";
 
@@ -416,5 +409,22 @@ const pizza = reactive({
       white-space: nowrap;
     }
   }
+}
+.visually-hidden {
+  position: absolute;
+
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+
+  white-space: nowrap;
+
+  border: 0;
+
+  clip-path: inset(100%);
 }
 </style>

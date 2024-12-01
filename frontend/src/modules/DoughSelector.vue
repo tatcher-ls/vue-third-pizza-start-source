@@ -15,7 +15,7 @@
                 :value="doughSizes"
                 class="visually-hidden"
                 :checked="doughType === modelValue"
-                @input="update(doughType)"
+                @input="updateDough(doughType)"
             />
             <img :src="getImage(doughType.image)" :alt="doughType.name" />
             <b>{{ doughType.name }}</b>
@@ -45,7 +45,7 @@ interface Emits {
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const update = (doughType: DoughItem) => {
+const updateDough = (doughType: DoughItem) => {
   emit('update:modelValue', doughType)
 }
 
