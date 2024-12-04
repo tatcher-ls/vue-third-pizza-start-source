@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { DATA_TRANSFER_PAYLOAD, MOVE } from "../constants";
+import { DATA_TRANSFER_PAYLOAD, MOVE } from "../constants/constants";
 
 const props = defineProps({
   transferData: {

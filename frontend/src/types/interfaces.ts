@@ -11,6 +11,7 @@ export interface Ingredient {
     name: string;
     image: string;
     price: number;
+    value?: string;
 }
 
 export interface Size {

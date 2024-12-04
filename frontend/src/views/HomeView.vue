@@ -3,7 +3,6 @@
     <form action="#" method="post">
       <div class="content__wrapper">
         <h1 class="title title--big">Конструктор пиццы</h1>
-        {{ pizza.size }}
         <dough-selector v-model="pizza.dough" :dough-list="doughList" />
 
         <size-list v-model="pizza.size" :sizes-list="sizesList" />
@@ -15,27 +14,13 @@
             </h2>
 
             <div class="sheet__content ingredients">
-              <div class="ingredients__sauce">
-                <p>Основной соус:</p>
+              <sauce-list v-model="pizza.sauces" :sauces-list="saucesList" />
 
-                <SauceItem
-                  v-for="sauce in saucesList"
-                  :key="sauce.id"
-                  :sauce="sauce"
-                />
-              </div>
-
-              <div class="ingredients__filling">
-                <p>Начинка:</p>
-
-                <ul class="ingredients__list">
-                  <IngredientItem
-                    v-for="ingredient in ingredientsList"
-                    :key="ingredient.id"
-                    :ingredient="ingredient"
-                  />
-                </ul>
-              </div>
+              <ingredient-list
+                :values="pizza.ingredients"
+                :ingredients-list="ingredientItems"
+                @update="updateIngredients"
+              />
             </div>
           </div>
         </div>
@@ -71,26 +56,52 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  normalizeDough,
+  normalizeIngredients,
+  normalizeSauces,
+  normalizeSize,
+} from "../common/helpers/normalize";
 import dough from "../mocks/dough.json";
 import ingredients from "../mocks/ingredients.json";
 import sizes from "../mocks/sizes.json";
 import sauces from "../mocks/sauces.json";
+import ingredientsJSON from "../mocks/ingredients.json";
 import { reactive, ref } from "vue";
 import { DoughItem, Ingredient, Size, Sauce } from "../types/interfaces";
 import SizeList from "../modules/SizeList.vue";
-import SauceItem from "../modules/SauceItem.vue";
-import IngredientItem from "../modules/IngredientItem.vue";
+import SauceList from "../modules/SauceList.vue";
+import IngredientList from "../modules/IngredientList.vue";
 import DoughSelector from "../modules/DoughSelector.vue";
+
+console.log(ingredientsJSON);
 
 const doughList = ref<Array<DoughItem>>(dough);
 const ingredientsList = ref<Array<Ingredient>>(ingredients);
 const sizesList = ref<Array<Size>>(sizes);
 const saucesList = ref<Array<Sauce>>(sauces);
 
+const ingredientItems = ingredientsJSON.map(normalizeIngredients);
+
+console.log(`normalizeIngredients!!`, ingredientItems);
+
 const pizza = reactive({
   dough: doughList.value[0],
   size: sizesList.value[0],
+  sauces: saucesList.value[0],
+  ingredients: ingredientItems.reduce((acc, item: Ingredient) => {
+    acc[item.value] = 0;
+    return acc;
+  }, {}),
 });
+
+const updateIngredients = (ingredient: Ingredient, countIngredient: number) => {
+  pizza.ingredients[ingredient.value] = countIngredient
+
+  console.log(pizza.ingredients)
+}
+
+console.log(pizza.ingredients);
 </script>
 
 <style lang="scss">
