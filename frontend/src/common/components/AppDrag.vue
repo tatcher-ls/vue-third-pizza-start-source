@@ -20,6 +20,7 @@ const props = defineProps({
 });
 
 function onDrag({ dataTransfer }) {
+  console.log(`dataTransfer`, dataTransfer);
   dataTransfer.effectAllowed = MOVE;
   dataTransfer.dropEffect = MOVE;
   dataTransfer.setData(

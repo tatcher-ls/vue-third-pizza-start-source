@@ -8,10 +8,10 @@
               :key="ingredientType.id"
               class="ingredients__item"
           >
-<!--            <app-drag-->
-<!--                :data-transfer="ingredientType"-->
-<!--                :draggable="getValue(ingredientType.value) < MAX_INGREDIENT_COUNT"-->
-<!--            >-->
+            <app-drag
+                :data-transfer="ingredientType"
+                :draggable="getValue(ingredientType) < MAX_INGREDIENT_COUNT"
+            >
               <div class="filling">
                 <img
                     :src="getImage(ingredientType.image)"
@@ -19,7 +19,7 @@
                 />
                 {{ ingredientType.name }}
               </div>
-<!--            </app-drag>-->
+            </app-drag>
 
             <div class="counter ingredients__counter">
               <button
