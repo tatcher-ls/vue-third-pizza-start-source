@@ -43,8 +43,8 @@
           />
 
           <div class="content__result">
-            <p>Итого: 0 ₽</p>
-            <button type="button" class="button" disabled>Готовьте!</button>
+            <p>Итого: {{price}} ₽</p>
+            <button type="button" class="button" :disabled="isDisabled">Готовьте!</button>
           </div>
         </div>
       </div>
@@ -54,17 +54,13 @@
 
 <script lang="ts" setup>
 import {
-  normalizeDough,
   normalizeIngredients,
-  normalizeSauces,
-  normalizeSize,
 } from "../common/helpers/normalize";
 import dough from "../mocks/dough.json";
-import ingredients from "../mocks/ingredients.json";
 import sizes from "../mocks/sizes.json";
 import sauces from "../mocks/sauces.json";
 import ingredientsJSON from "../mocks/ingredients.json";
-import { reactive, ref } from "vue";
+import {computed, reactive, ref} from "vue";
 import { DoughItem, Ingredient, Size, Sauce } from "../types/interfaces";
 import SizeList from "../modules/SizeList.vue";
 import SauceList from "../modules/SauceList.vue";
@@ -75,7 +71,6 @@ import PizzaConstructor from "../modules/PizzaConstructor.vue";
 console.log(ingredientsJSON);
 
 const doughList = ref<Array<DoughItem>>(dough);
-const ingredientsList = ref<Array<Ingredient>>(ingredients);
 const sizesList = ref<Array<Size>>(sizes);
 const saucesList = ref<Array<Sauce>>(sauces);
 
@@ -95,11 +90,28 @@ const updateIngredients = (ingredient: Ingredient, countIngredient: number) => {
   pizza.ingredients[ingredient.value] = countIngredient
 }
 
-const addIngredient = (value) => {
-  console.log(`!!!!`, value)
+const addIngredient = (value: string) => {
+  pizza.ingredients[value] ++
 }
 
-console.log(pizza.ingredients);
+const price = computed(() => {
+  const {dough, size, sauces, ingredients} = pizza;
+  const sizeMultiplier = size.multiplier;
+
+  const priceDough = dough.price;
+  const priceSauces = sauces.price;
+
+  const priceIngredients = ingredientItems.map(item => ingredients[item.value] * item.price).reduce((acc: number, item) => {
+    return acc + item
+  }, 0)
+
+  return (priceDough + priceSauces + priceIngredients) * sizeMultiplier;
+})
+
+const isDisabled = computed(() => {
+   return price.value === 0
+})
+
 </script>
 
 <style lang="scss">

@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import {DoughItem, Sauce} from "../types/interfaces";
+import {DoughItem, Ingredient, Sauce} from "../types/interfaces";
 import {computed} from "vue";
 import AppDrop from "../common/components/AppDrop.vue";
 const TWO_INGREDIENTS = 2;
@@ -49,12 +49,9 @@ const pizzaIngredients = computed(() => {
   },{})
 })
 
-const drop = (event: DragEvent) => {
-  const data = event.dataTransfer?.getData('text');
-  emit('drop', data)
+const drop = (transferData: Ingredient) => {
+  emit('drop', transferData.value)
 }
-
-console.log(`@@@!!`, pizzaIngredients)
 
 
 </script>
