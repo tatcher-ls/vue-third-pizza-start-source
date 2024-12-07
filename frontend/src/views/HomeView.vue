@@ -35,15 +35,12 @@
             />
           </label>
 
-          <div class="content__constructor">
-            <div class="pizza pizza--foundation--big-tomato">
-              <div class="pizza__wrapper">
-                <div class="pizza__filling pizza__filling--ananas"></div>
-                <div class="pizza__filling pizza__filling--bacon"></div>
-                <div class="pizza__filling pizza__filling--cheddar"></div>
-              </div>
-            </div>
-          </div>
+          <pizza-constructor
+            :dough="pizza.dough"
+            :sauces="pizza.sauces"
+            :ingredients="pizza.ingredients"
+            @drop="addIngredient"
+          />
 
           <div class="content__result">
             <p>Итого: 0 ₽</p>
@@ -73,6 +70,7 @@ import SizeList from "../modules/SizeList.vue";
 import SauceList from "../modules/SauceList.vue";
 import IngredientList from "../modules/IngredientList.vue";
 import DoughSelector from "../modules/DoughSelector.vue";
+import PizzaConstructor from "../modules/PizzaConstructor.vue";
 
 console.log(ingredientsJSON);
 
@@ -82,8 +80,6 @@ const sizesList = ref<Array<Size>>(sizes);
 const saucesList = ref<Array<Sauce>>(sauces);
 
 const ingredientItems = ingredientsJSON.map(normalizeIngredients);
-
-console.log(`normalizeIngredients!!`, ingredientItems);
 
 const pizza = reactive({
   dough: doughList.value[0],
@@ -97,8 +93,10 @@ const pizza = reactive({
 
 const updateIngredients = (ingredient: Ingredient, countIngredient: number) => {
   pizza.ingredients[ingredient.value] = countIngredient
+}
 
-  console.log(pizza.ingredients)
+const addIngredient = (value) => {
+  console.log(`!!!!`, value)
 }
 
 console.log(pizza.ingredients);

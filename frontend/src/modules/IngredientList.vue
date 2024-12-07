@@ -9,7 +9,7 @@
               class="ingredients__item"
           >
             <app-drag
-                :data-transfer="ingredientType"
+                :transfer-data="ingredientType"
                 :draggable="getValue(ingredientType) < MAX_INGREDIENT_COUNT"
             >
               <div class="filling">
