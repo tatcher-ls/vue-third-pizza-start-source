@@ -21,31 +21,13 @@
               </div>
             </app-drag>
 
-            <div class="counter ingredients__counter">
-              <button
-                  type="button"
-                  class="counter__button counter__button--minus"
-                  :disabled="getValue(ingredientType) === 0"
-                  @click="decrementValue(ingredientType)"
-              >
-                <span class="visually-hidden">Меньше</span>
-              </button>
-              <input
-                  type="text"
-                  name="counter"
-                  class="counter__input"
-                  :value="getValue(ingredientType)"
-                  @input="inputValue(ingredientType, $event)"
-              />
-              <button
-                  type="button"
-                  class="counter__button counter__button--plus"
-                  :disabled="getValue(ingredientType) === MAX_INGREDIENT_COUNT"
-                  @click="incrementValue(ingredientType)"
-              >
-                <span class="visually-hidden">Больше</span>
-              </button>
-            </div>
+            <app-counter
+                class="ingredients__counter"
+                :count="getValue(ingredientType)"
+                :min=0
+                :max="MAX_INGREDIENT_COUNT"
+                @update="(count) => updateCount(count, ingredientType)"
+            />
           </li>
 
         </ul>
@@ -53,10 +35,10 @@
 </template>
 <script setup lang="ts">
 import {getImage} from "../common/helpers";
-import saucesData from "../common/data/sauces";
 import {Ingredient} from "../types/interfaces";
 import AppDrag from "../common/components/AppDrag.vue";
 import {MAX_INGREDIENT_COUNT} from "../common/constants/constants";
+import AppCounter from "./AppCounter.vue";
 
 interface Props {
   ingredientsList: Array<Ingredient>
@@ -75,19 +57,9 @@ const getValue = (ingredient: Ingredient) => {
   return props.values[ingredient.value] ?? 0;
 }
 
-const incrementValue = (ingredient: Ingredient) => {
-  const countIngredient = getValue(ingredient) + 1;
-  setValue(ingredient, countIngredient)
-}
-
-const decrementValue = (ingredient: Ingredient) => {
-  setValue(ingredient, getValue(ingredient) - 1)
-}
-
-const inputValue = (ingredient: Ingredient, event: Event) => {
-  const target = event.target as HTMLInputElement;
-  const count = target.value.length === 0 ? 0 : parseInt(target.value)
-  setValue(ingredient, Math.min(count, MAX_INGREDIENT_COUNT))
+const updateCount = (countIngredient: number, ingredient: Ingredient) => {
+  console.log(`countIngredient`, countIngredient)
+  setValue(ingredient,  Math.min(countIngredient, MAX_INGREDIENT_COUNT))
 }
 
 
@@ -103,8 +75,10 @@ const setValue = (ingredient: Ingredient, countIngredient: number) => {
 
 .ingredients__filling {
   width: 100%;
+
   p {
     @include r-s16-h19;
+
     margin-top: 0;
     margin-bottom: 16px;
   }
@@ -112,6 +86,7 @@ const setValue = (ingredient: Ingredient, countIngredient: number) => {
 
 .ingredients__list {
   @include clear-list;
+
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
@@ -130,143 +105,26 @@ const setValue = (ingredient: Ingredient, countIngredient: number) => {
   margin-left: 36px;
 }
 
-.counter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.counter__button {
-  $el: &;
-  $size_icon: 50%;
-  position: relative;
-  display: block;
-  width: 16px;
-  height: 16px;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-  transition: 0.3s;
-  border: none;
-  border-radius: 50%;
-  outline: none;
-
-  &--minus {
-    background-color: $purple-100;
-
-    &::before {
-      @include p_center-all;
-      width: $size_icon;
-      height: 2px;
-      content: "";
-      border-radius: 2px;
-      background-color: $black;
-    }
-
-    &:hover:not(:active):not(:disabled) {
-      background-color: $purple-200;
-    }
-
-    &:active:not(:disabled) {
-      background-color: $purple-300;
-    }
-
-    &:focus:not(:disabled) {
-      box-shadow: $shadow-regular;
-    }
-
-    &:disabled {
-      cursor: default;
-      &::before {
-        opacity: 0.1;
-      }
-    }
-  }
-
-  &--plus {
-    background-color: $green-500;
-
-    &::before {
-      @include p_center-all;
-      width: $size_icon;
-      height: 2px;
-      content: "";
-      border-radius: 2px;
-      background-color: $white;
-    }
-
-    &::after {
-      @include p_center-all;
-      width: $size_icon;
-      height: 2px;
-      content: "";
-      transform: translate(-50%, -50%) rotate(90deg);
-      border-radius: 2px;
-      background-color: $white;
-    }
-
-    &:hover:not(:active):not(:disabled) {
-      background-color: $green-400;
-    }
-
-    &:active:not(:disabled) {
-      background-color: $green-600;
-    }
-
-    &:focus:not(:disabled) {
-      box-shadow: $shadow-regular;
-    }
-
-    &:disabled {
-      cursor: default;
-      opacity: 0.3;
-    }
-  }
-
-  &--orange {
-    background-color: $orange-200;
-
-    &:hover:not(:active):not(:disabled) {
-      background-color: $orange-100;
-    }
-
-    &:active:not(:disabled) {
-      background-color: $orange-300;
-    }
-  }
-}
-
-.counter__input {
-  @include r-s14-h16;
-  box-sizing: border-box;
-  width: 22px;
-  margin: 0;
-  padding: 0 3px;
-  text-align: center;
-  color: $black;
-  border: none;
-  border-radius: 10px;
-  outline: none;
-  background-color: transparent;
-
-  &:focus {
-    box-shadow: inset $shadow-regular;
-  }
-}
-
 .filling {
   @include r-s14-h16;
+
   position: relative;
+
   display: block;
+
   padding-left: 36px;
 
   img {
     @include p_center-v;
+
     display: block;
+
     width: 32px;
     height: 32px;
+
     box-sizing: border-box;
     padding: 4px;
+
     border-radius: 50%;
   }
 }
