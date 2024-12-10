@@ -44,7 +44,13 @@
 
           <div class="content__result">
             <p>Итого: {{price}} ₽</p>
-            <button type="button" class="button" :disabled="isDisabled">Готовьте!</button>
+            <button type="button" class="button" :disabled="isDisabled"
+                    @click="
+                      $router.push({
+                      name: 'Cart'
+                      })
+                    "
+            >Готовьте!</button>
           </div>
         </div>
       </div>
