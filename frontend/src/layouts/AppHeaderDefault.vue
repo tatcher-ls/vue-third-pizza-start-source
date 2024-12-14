@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="header__logo">
-      <router-link :to="{ name: 'Home' }" class="logo">
+      <router-link :to="{ name: 'home' }" class="logo">
         <img
           src="@/assets/img/logo.svg"
           alt="V!U!E! Pizza logo"
@@ -11,10 +11,10 @@
       </router-link>
     </div>
     <div class="header__cart">
-      <router-link :to="{ name: 'Cart' }" class="logo"> 0 ₽ </router-link>
+      <router-link :to="{ name: 'cart' }" class="logo"> 0 ₽ </router-link>
     </div>
     <div class="header__user">
-      <router-link :to="{ name: 'Profile' }">
+      <router-link :to="{ name: 'profile' }">
         <picture>
           <source
             type="image/webp"
@@ -33,7 +33,7 @@
         </picture>
         <span>Василий Ложкин</span>
       </router-link>
-      <router-link :to="{ name: 'Home' }" class="header__logout">
+      <router-link :to="{ name: 'home' }" class="header__logout">
         <span>Выйти</span>
       </router-link>
     </div>

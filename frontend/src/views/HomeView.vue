@@ -47,7 +47,7 @@
             <button type="button" class="button" :disabled="isDisabled"
                     @click="
                       $router.push({
-                      name: 'Cart'
+                      name: 'cart'
                       })
                     "
             >Готовьте!</button>
