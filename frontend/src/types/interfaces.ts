@@ -55,8 +55,8 @@ export interface Ingredient {
 }
 
 export interface OrderMisc {
-    id: number;
-    orderId: number;
+    id?: number;
+    orderId?: number;
     miscId: number;
     quantity: number;
 }
@@ -83,16 +83,21 @@ export interface Cart {
     phone: string,
     address: Address,
     pizzas: Array<PizzaCart>,
-    misc: Array<Misc>,
+    misc: Array<OrderMisc>,
 }
 
 export interface Pizza {
-    index: string,
+    index?: string,
     name: string,
     sauceId: number,
     doughId: number,
     sizeId: number,
-    ingredients: Array<Ingredient>,
+    ingredients: Array<IngredientPizza>,
+}
+
+export interface IngredientPizza {
+    ingredientId: number,
+    quantity: number,
 }
 
 export interface PizzaCart {

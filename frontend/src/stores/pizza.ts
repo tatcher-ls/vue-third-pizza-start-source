@@ -60,6 +60,75 @@ export const usePizzaStore = defineStore("pizza", () => {
 
   const ingredientQuantities = computed(() => ingredientsQuantity(state.value));
 
+  const setIndex = (index) => {
+    state.value.index = index;
+  };
+
+  const setName = (name: string) => {
+    state.value.name = name
+  }
+
+  const setSauce = (sauceId: number) => {
+    state.value.sizeId = sauceId
+  }
+
+  const setDough = (doughId: number) => {
+    state.value.doughId = doughId
+  }
+
+  const setSize = (sizeId: number) => {
+    state.value.sizeId = sizeId
+  }
+
+  const setIngredients = (ingredients) => {
+    state.value.ingredients = ingredients
+  }
+
+  const addIngredient = (ingredientId: number) => {
+    state.value.ingredients.push({
+      ingredientId,
+      quantity: 1
+    })
+  }
+
+  const incrementIngredientQuantity = (ingredientId: number) => {
+    const ingredientIdx = state.value.ingredients.findIndex(item => item.ingredientId === ingredientId);
+
+    if (ingredientIdx === -1) {
+      addIngredient(ingredientId)
+      return;
+    }
+
+    state.value.ingredients[ingredientIdx].quantity ++;
+  }
+
+  const setIngredientQuantity = (ingredientId: number, count: number) => {
+    const ingredientIdx = state.value.ingredients.findIndex(item => item.ingredientId === ingredientId);
+
+    if (ingredientIdx === -1 && count > 0) {
+      addIngredient(ingredientId)
+      return;
+    } else if (ingredientIdx === -1) {
+      return;
+    }
+
+    /* Удаляем ингредиент, если количество 0 */
+    if (count === 0) {
+      state.value.ingredients.splice(ingredientIdx, 1)
+    }
+
+    state.value.ingredients[ingredientIdx].quantity = count;
+  }
+
+  const loadPizza = (pizza: Pizza) => {
+    state.value.index = pizza.index;
+    state.value.name = pizza.name;
+    state.value.sauceId = pizza.sauceId;
+    state.value.doughId = pizza.doughId;
+    state.value.sizeId = pizza.sizeId;
+    state.value.ingredients = pizza.ingredients;
+  }
+
   return {
     state,
     sauce,
@@ -68,5 +137,14 @@ export const usePizzaStore = defineStore("pizza", () => {
     ingredientsExtended,
     price,
     ingredientQuantities,
+    setIndex,
+    setName,
+    setSauce,
+    setDough,
+    setSize,
+    setIngredients,
+    addIngredient,
+    incrementIngredientQuantity,
+    setIngredientQuantity
   };
 });
