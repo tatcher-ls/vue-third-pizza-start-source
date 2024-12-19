@@ -10,8 +10,8 @@
       <input
           type="radio"
           name="sauce"
-          :value="sauceType"
-          :checked="sauceType === modelValue"
+          :value="sauceType.value"
+          :checked="sauceType.id === modelValue"
           @input="updateSauce(sauceType)"
       />
       <span>{{ sauceType.name }}</span>
@@ -23,18 +23,18 @@ import saucesData from "../common/data/sauces";
 import { Sauce } from "../types/interfaces";
 interface Props {
   saucesList: Array<Sauce>
-  modelValue: Sauce
+  modelValue: number
 }
 
 interface Emites {
-  (event: 'update:modelValue', sauce: Sauce): void
+  (event: 'update:modelValue', sauce: number): void
 }
 
 defineProps<Props>();
 const emit = defineEmits<Emites>();
 
 const updateSauce = (sauceType: Sauce) => {
-  emit('update:modelValue', sauceType)
+  emit('update:modelValue', sauceType.id)
 }
 </script>
 

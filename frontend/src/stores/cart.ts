@@ -85,6 +85,7 @@ export const useCartStore = defineStore("cart", () => {
   };
 
   const setMiscQuantity = (miscId: number, count: number) => {
+    console.log(miscId,count )
     const miscIdx = state.value.misc.findIndex(item => item.id === miscId)
 
     if (miscIdx !== -1 && count > 0) {

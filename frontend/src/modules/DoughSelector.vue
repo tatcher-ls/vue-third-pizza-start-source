@@ -12,10 +12,10 @@
             <input
                 type="radio"
                 name="dough"
-                :value="doughSizes"
+                :value="doughType.id"
                 class="visually-hidden"
-                :checked="doughType === modelValue"
-                @input="updateDough(doughType)"
+                :checked="doughType.id === modelValue"
+                @input="emit('update:modelValue', doughType.id)"
             />
             <img :src="getImage(doughType.image)" :alt="doughType.name" />
             <b>{{ doughType.name }}</b>
@@ -35,18 +35,18 @@ import doughSizes from "../common/data/doughSizes";
 
 interface Props {
   doughList: Array<DoughItem>
-  modelValue: DoughItem
+  modelValue: number
 }
 
 interface Emits {
-  (event: 'update:modelValue', value: DoughItem): void
+  (event: 'update:modelValue', value: number): void
 }
 
 defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const updateDough = (doughType: DoughItem) => {
-  emit('update:modelValue', doughType)
+  emit('update:modelValue', doughType.id)
 }
 
 </script>

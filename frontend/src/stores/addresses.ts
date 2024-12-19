@@ -4,10 +4,10 @@ import { OrderAddress } from "../types/interfaces";
 import addressesJSON from "../mocks/addresses.json";
 
 export const useAddressesStore = defineStore("profile", () => {
-  const addresses = ref<Array<OrderAddress>>(addressesJSON);
+  const addresses = ref<OrderAddress>(addressesJSON);
   // state: () => ({}),
   // getters: {},
   // actions: {},
 
-  return addresses;
+  return { addresses };
 });

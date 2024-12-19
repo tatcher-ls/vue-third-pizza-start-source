@@ -3,9 +3,9 @@
     <form action="#" method="post">
       <div class="content__wrapper">
         <h1 class="title title--big">Конструктор пиццы</h1>
-        <dough-selector v-model="pizza.dough" :dough-list="doughList" />
+        <dough-selector v-model="doughId" :dough-list="dataStore.doughData" />
 
-        <size-list v-model="pizza.size" :sizes-list="sizesList" />
+        <size-list v-model="sizeId" :sizes-list="dataStore.sizes" />
 
         <div class="content__ingredients">
           <div class="sheet">
@@ -14,12 +14,12 @@
             </h2>
 
             <div class="sheet__content ingredients">
-              <sauce-list v-model="pizza.sauces" :sauces-list="saucesList" />
+              <sauce-list v-model="sauceId" :sauces-list="dataStore.sauces" />
 
               <ingredient-list
-                :values="pizza.ingredients"
-                :ingredients-list="ingredientItems"
-                @update="updateIngredients"
+                :values="pizzaStore.ingredientQuantities"
+                :ingredients-list="dataStore.ingredients"
+                @update="pizzaStore.setIngredientQuantity"
               />
             </div>
           </div>
@@ -29,6 +29,7 @@
           <label class="input">
             <span class="visually-hidden">Название пиццы</span>
             <input
+              v-model="name"
               type="text"
               name="pizza_name"
               placeholder="Введите название пиццы"
@@ -36,21 +37,22 @@
           </label>
 
           <pizza-constructor
-            :dough="pizza.dough"
-            :sauces="pizza.sauces"
-            :ingredients="pizza.ingredients"
-            @drop="addIngredient"
+            :dough="pizzaStore.dough"
+            :sauces="pizzaStore.sauce"
+            :ingredients="pizzaStore.ingredientsExtended"
+            @drop="pizzaStore.incrementIngredientQuantity"
           />
 
           <div class="content__result">
-            <p>Итого: {{price}} ₽</p>
-            <button type="button" class="button" :disabled="isDisabled"
-                    @click="
-                      $router.push({
-                      name: 'cart'
-                      })
-                    "
-            >Готовьте!</button>
+            <p>Итого: {{ pizzaStore.price }} ₽</p>
+            <button
+              type="button"
+              class="button"
+              :disabled="disableSubmit"
+              @click="addToCart"
+            >
+              Готовьте!
+            </button>
           </div>
         </div>
       </div>
@@ -59,65 +61,83 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  normalizeIngredients,
-} from "../common/helpers/normalize";
-import dough from "../mocks/dough.json";
-import sizes from "../mocks/sizes.json";
-import sauces from "../mocks/sauces.json";
-import ingredientsJSON from "../mocks/ingredients.json";
-import {computed, reactive, ref} from "vue";
-import { DoughItem, Ingredient, Size, Sauce } from "../types/interfaces";
+import { computed, onMounted } from "vue";
 import SizeList from "../modules/SizeList.vue";
 import SauceList from "../modules/SauceList.vue";
 import IngredientList from "../modules/IngredientList.vue";
 import DoughSelector from "../modules/DoughSelector.vue";
 import PizzaConstructor from "../modules/PizzaConstructor.vue";
+import { useDataStore } from "../stores/data";
+import { usePizzaStore } from "../stores/pizza";
+import { useCartStore } from "../stores/cart";
+import { useRouter } from "vue-router";
 
-console.log(ingredientsJSON);
+const dataStore = useDataStore();
+const pizzaStore = usePizzaStore();
+const cartStore = useCartStore();
 
-const doughList = ref<Array<DoughItem>>(dough);
-const sizesList = ref<Array<Size>>(sizes);
-const saucesList = ref<Array<Sauce>>(sauces);
+const router = useRouter();
 
-const ingredientItems = ingredientsJSON.map(normalizeIngredients);
-
-const pizza = reactive({
-  dough: doughList.value[0],
-  size: sizesList.value[0],
-  sauces: saucesList.value[0],
-  ingredients: ingredientItems.reduce((acc, item: Ingredient) => {
-    acc[item.value] = 0;
-    return acc;
-  }, {}),
+const name = computed({
+  get() {
+    return pizzaStore.state.name;
+  },
+  set(value) {
+    pizzaStore.setName(value);
+  },
 });
 
-const updateIngredients = (ingredient: Ingredient, countIngredient: number) => {
-  pizza.ingredients[ingredient.value] = countIngredient
-}
+const doughId = computed({
+  get() {
+    return pizzaStore.state.doughId;
+  },
+  set(value) {
+    pizzaStore.setDough(value);
+  },
+});
 
-const addIngredient = (value: string) => {
-  pizza.ingredients[value] ++
-}
+const sizeId = computed({
+  get() {
+    return pizzaStore.state.sizeId;
+  },
+  set(value) {
+    pizzaStore.setSize(value);
+  },
+});
 
-const price = computed(() => {
-  const {dough, size, sauces, ingredients} = pizza;
-  const sizeMultiplier = size.multiplier;
+const sauceId = computed({
+  get() {
+    return pizzaStore.state.sauceId;
+  },
+  set(value) {
+    pizzaStore.setSauce(value);
+  },
+});
 
-  const priceDough = dough.price;
-  const priceSauces = sauces.price;
+const disableSubmit = () => {
+  return pizzaStore.price === 0 || name.value.length === 0;
+};
 
-  const priceIngredients = ingredientItems.map(item => ingredients[item.value] * item.price).reduce((acc: number, item) => {
-    return acc + item
-  }, 0)
+const addToCart = async () => {
+  cartStore.savePizza(pizzaStore.state);
+  await router.push({ name: "cart" });
+  resetPizza();
+};
 
-  return (priceDough + priceSauces + priceIngredients) * sizeMultiplier;
-})
+const resetPizza = () => {
+  pizzaStore.setName("");
+  pizzaStore.setDough(dataStore.doughData[0].id);
+  pizzaStore.setSize(dataStore.sizes[0].id);
+  pizzaStore.setSauce(dataStore.sauces[0].id);
+  pizzaStore.setIngredients([]);
+  pizzaStore.setIndex(null);
+};
 
-const isDisabled = computed(() => {
-   return price.value === 0
-})
-
+onMounted(() => {
+  if (pizzaStore.state.index === null) {
+    resetPizza();
+  }
+});
 </script>
 
 <style lang="scss">

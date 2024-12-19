@@ -85,10 +85,13 @@ export const usePizzaStore = defineStore("pizza", () => {
   }
 
   const addIngredient = (ingredientId: number) => {
+    console.log(`!!!!`, ingredientId)
     state.value.ingredients.push({
       ingredientId,
       quantity: 1
     })
+
+    console.log(`!!!`, state.value)
   }
 
   const incrementIngredientQuantity = (ingredientId: number) => {
@@ -103,9 +106,11 @@ export const usePizzaStore = defineStore("pizza", () => {
   }
 
   const setIngredientQuantity = (ingredientId: number, count: number) => {
+    console.log(`im here`, ingredientId, count)
     const ingredientIdx = state.value.ingredients.findIndex(item => item.ingredientId === ingredientId);
 
     if (ingredientIdx === -1 && count > 0) {
+      console.log(`++`)
       addIngredient(ingredientId)
       return;
     } else if (ingredientIdx === -1) {
@@ -117,7 +122,10 @@ export const usePizzaStore = defineStore("pizza", () => {
       state.value.ingredients.splice(ingredientIdx, 1)
     }
 
+    console.log(`state.value.ingredients[ingredientIdx]`, state.value.ingredients[ingredientIdx])
     state.value.ingredients[ingredientIdx].quantity = count;
+
+    console.log(`state`, state.value)
   }
 
   const loadPizza = (pizza: Pizza) => {
@@ -145,6 +153,7 @@ export const usePizzaStore = defineStore("pizza", () => {
     setIngredients,
     addIngredient,
     incrementIngredientQuantity,
-    setIngredientQuantity
+    setIngredientQuantity,
+    loadPizza
   };
 });

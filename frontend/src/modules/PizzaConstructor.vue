@@ -1,17 +1,17 @@
 <template>
   <div class="content__constructor">
-    <app-drop @drop="drop">
+    <app-drop @drop="emit('drop', $event.id)">
       <div :class="`pizza pizza--foundation--${dough.name}-${sauces.name}`">
         <div class="pizza__wrapper">
           <div
-              v-for="(value, index) in pizzaIngredients"
-              :key="index"
+              v-for="item in ingredients"
+              :key="item.id"
               class="pizza__filling"
               :class="[
-                  `pizza__filling--${index}`,
-                  value === TWO_INGREDIENTS && 'pizza__filling--second',
-                  value === THREE_INGREDIENTS && 'pizza__filling--third'
-              ]"
+              `pizza__filling--${item.value}`,
+              item.quantity === TWO_INGREDIENTS && 'pizza__filling--second',
+              item.quantity === THREE_INGREDIENTS && 'pizza__filling--third',
+            ]"
           />
         </div>
       </div>
@@ -29,7 +29,7 @@ const THREE_INGREDIENTS = 3;
 interface Props {
   dough: DoughItem,
   sauces: Sauce,
-  ingredients: { [key: string]: number }
+  ingredients: Array<Ingredient>
 }
 
 interface Emits {
@@ -53,7 +53,6 @@ const drop = (transferData: Ingredient) => {
   emit('drop', transferData.value)
 }
 
-
 </script>
 
 <style lang="scss" scoped>
@@ -74,9 +73,12 @@ const drop = (transferData: Ingredient) => {
   position: absolute;
   top: 0;
   left: 0;
+
   display: block;
+
   width: 100%;
   height: 100%;
+
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100%;
@@ -84,18 +86,23 @@ const drop = (transferData: Ingredient) => {
   &::before,
   &::after {
     display: none;
+
     position: absolute;
     top: 0;
     left: 0;
+
     width: 100%;
     height: 100%;
+
     content: "";
+
     background-image: inherit;
   }
 
   &--second {
     &::before {
       display: block;
+
       transform: rotate(45deg);
     }
   }
@@ -103,10 +110,13 @@ const drop = (transferData: Ingredient) => {
   &--third {
     &::before {
       display: block;
+
       transform: rotate(45deg);
     }
+
     &::after {
       display: block;
+
       transform: rotate(-45deg);
     }
   }
@@ -204,9 +214,12 @@ const drop = (transferData: Ingredient) => {
 
 .pizza {
   position: relative;
+
   display: block;
+
   box-sizing: border-box;
   width: 100%;
+
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100%;

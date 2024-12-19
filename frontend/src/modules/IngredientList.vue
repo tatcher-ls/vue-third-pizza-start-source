@@ -26,7 +26,7 @@
                 :count="getValue(ingredientType)"
                 :min=0
                 :max="MAX_INGREDIENT_COUNT"
-                @update="(count) => updateCount(count, ingredientType)"
+                @update="(count) => updateCount(count, ingredientType.id)"
             />
           </li>
 
@@ -46,7 +46,7 @@ interface Props {
 }
 
 interface Emites {
-  (event: 'update', ingredient: Ingredient,  value: number): void
+  (event: 'update', ingredient: number,  value: number): void
 }
 
 const props = defineProps<Props>();
@@ -57,13 +57,13 @@ const getValue = (ingredient: Ingredient) => {
   return props.values[ingredient.value] ?? 0;
 }
 
-const updateCount = (countIngredient: number, ingredient: Ingredient) => {
+const updateCount = (countIngredient: number, ingredient: number) => {
   console.log(`countIngredient`, countIngredient)
   setValue(ingredient,  Math.min(countIngredient, MAX_INGREDIENT_COUNT))
 }
 
 
-const setValue = (ingredient: Ingredient, countIngredient: number) => {
+const setValue = (ingredient: number, countIngredient: number) => {
   emit('update', ingredient, countIngredient)
 }
 

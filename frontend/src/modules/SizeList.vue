@@ -5,20 +5,20 @@
 
       <div class="sheet__content diameter">
         <label
-            v-for="size in sizesList"
-            :key="size.id"
+            v-for="sizeType in sizesList"
+            :key="sizeType.id"
             class="diameter__input"
-            :class="`diameter__input--${sizesData[size.id]}`"
+            :class="`diameter__input--${sizesData[sizeType.id]}`"
         >
           <input
               type="radio"
               name="diameter"
-              :value="sizesData[size.id]"
+              :value="sizeType.id"
               class="visually-hidden"
-              :checked="size === modelValue"
-              @input="updateSize(size)"
+              :checked="sizeType.id === modelValue"
+              @input="updateSize(sizeType)"
           />
-          <span>{{ size.name }}</span>
+          <span>{{ sizeType.name }}</span>
         </label>
       </div>
 
@@ -33,18 +33,18 @@ import sizesData from "../common/data/sizes";
 
 interface Props {
   sizesList: Array<Size>
-  modelValue: Size
+  modelValue: number
 }
 
 interface Emits {
-  (event: 'update:modelValue', sise: Size): void
+  (event: 'update:modelValue', sise: number): void
 }
 
 defineProps<Props>()
 const emit = defineEmits<Emits>();
 
 const updateSize = (sise: Size) => {
-  emit('update:modelValue', sise)
+  emit('update:modelValue', sise.id)
 }
 </script>
 

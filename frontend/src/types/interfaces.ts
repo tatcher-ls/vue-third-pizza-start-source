@@ -25,6 +25,7 @@ export interface Sauce {
     id: number;
     name: string;
     price: number;
+    value: string;
 }
 
 export interface Order {
@@ -59,6 +60,10 @@ export interface OrderMisc {
     orderId?: number;
     miscId: number;
     quantity: number;
+}
+
+export interface Profile {
+    addresses: OrderAddress
 }
 
 export interface OrderAddress {
