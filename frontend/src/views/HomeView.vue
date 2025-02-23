@@ -1,11 +1,12 @@
 <template>
-  <main class="content">
+  <main v-if="dataStore.isDataLoaded" class="content">
     <form action="#" method="post">
       <div class="content__wrapper">
         <h1 class="title title--big">Конструктор пиццы</h1>
-        <dough-selector v-model="doughId" :dough-list="dataStore.doughData" />
 
-        <size-list v-model="sizeId" :sizes-list="dataStore.sizes" />
+        <dough-selector v-model="doughId" :items="dataStore.doughs" />
+
+        <diameter-selector v-model="sizeId" :items="dataStore.sizes" />
 
         <div class="content__ingredients">
           <div class="sheet">
@@ -14,11 +15,11 @@
             </h2>
 
             <div class="sheet__content ingredients">
-              <sauce-list v-model="sauceId" :sauces-list="dataStore.sauces" />
+              <sauce-selector v-model="sauceId" :items="dataStore.sauces" />
 
-              <ingredient-list
+              <ingredients-selector
                 :values="pizzaStore.ingredientQuantities"
-                :ingredients-list="dataStore.ingredients"
+                :items="dataStore.ingredients"
                 @update="pizzaStore.setIngredientQuantity"
               />
             </div>
@@ -37,8 +38,8 @@
           </label>
 
           <pizza-constructor
-            :dough="pizzaStore.dough"
-            :sauces="pizzaStore.sauce"
+            :dough="pizzaStore.dough.value"
+            :sauce="pizzaStore.sauce.value"
             :ingredients="pizzaStore.ingredientsExtended"
             @drop="pizzaStore.incrementIngredientQuantity"
           />
@@ -60,16 +61,16 @@
   </main>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { computed, onMounted } from "vue";
-import SizeList from "../modules/SizeList.vue";
-import SauceList from "../modules/SauceList.vue";
-import IngredientList from "../modules/IngredientList.vue";
-import DoughSelector from "../modules/DoughSelector.vue";
-import PizzaConstructor from "../modules/PizzaConstructor.vue";
-import { useDataStore } from "../stores/data";
-import { usePizzaStore } from "../stores/pizza";
-import { useCartStore } from "../stores/cart";
+import DoughSelector from "@/modules/constructor/DoughSelector.vue";
+import DiameterSelector from "@/modules/constructor/DiameterSelector.vue";
+import SauceSelector from "@/modules/constructor/SauceSelector.vue";
+import IngredientsSelector from "@/modules/constructor/IngredientsSelector.vue";
+import PizzaConstructor from "@/modules/constructor/PizzaConstructor.vue";
+import { usePizzaStore } from "@/stores/pizza";
+import { useDataStore } from "@/stores/data";
+import { useCartStore } from "@/stores/cart";
 import { useRouter } from "vue-router";
 
 const dataStore = useDataStore();
@@ -80,7 +81,7 @@ const router = useRouter();
 
 const name = computed({
   get() {
-    return pizzaStore.state.name;
+    return pizzaStore.name;
   },
   set(value) {
     pizzaStore.setName(value);
@@ -89,7 +90,7 @@ const name = computed({
 
 const doughId = computed({
   get() {
-    return pizzaStore.state.doughId;
+    return pizzaStore.doughId;
   },
   set(value) {
     pizzaStore.setDough(value);
@@ -98,7 +99,7 @@ const doughId = computed({
 
 const sizeId = computed({
   get() {
-    return pizzaStore.state.sizeId;
+    return pizzaStore.sizeId;
   },
   set(value) {
     pizzaStore.setSize(value);
@@ -107,41 +108,44 @@ const sizeId = computed({
 
 const sauceId = computed({
   get() {
-    return pizzaStore.state.sauceId;
+    return pizzaStore.sauceId;
   },
   set(value) {
     pizzaStore.setSauce(value);
   },
 });
 
-const disableSubmit = () => {
-  return pizzaStore.price === 0 || name.value.length === 0;
-};
+const disableSubmit = computed(() => {
+  return name.value.length === 0 || pizzaStore.price === 0;
+});
 
 const addToCart = async () => {
-  cartStore.savePizza(pizzaStore.state);
+  cartStore.savePizza(pizzaStore.$state);
   await router.push({ name: "cart" });
   resetPizza();
 };
 
 const resetPizza = () => {
   pizzaStore.setName("");
-  pizzaStore.setDough(dataStore.doughData[0].id);
-  pizzaStore.setSize(dataStore.sizes[0].id);
-  pizzaStore.setSauce(dataStore.sauces[0].id);
+
+  if (dataStore.isDataLoaded) {
+    pizzaStore.setDough(dataStore.doughs[0].id);
+    pizzaStore.setSize(dataStore.sizes[0].id);
+    pizzaStore.setSauce(dataStore.sauces[0].id);
+  }
+
   pizzaStore.setIngredients([]);
   pizzaStore.setIndex(null);
 };
 
 onMounted(() => {
-  if (pizzaStore.state.index === null) {
+  if (pizzaStore.index === null) {
     resetPizza();
   }
 });
 </script>
 
 <style lang="scss">
-@import "@/assets/scss/app.scss";
 @import "@/assets/scss/ds-system/ds.scss";
 @import "@/assets/scss/mixins/mixins.scss";
 
